@@ -9,6 +9,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.example.openyourworld.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -28,9 +29,8 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        binding.fab.setOnClickListener {
+            Toast.makeText(this, "Send email to author", Toast.LENGTH_LONG).show()
         }
     }
 

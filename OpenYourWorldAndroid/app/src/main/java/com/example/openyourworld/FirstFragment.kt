@@ -35,6 +35,8 @@ class FirstFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+
+        // TODO: add world map here
     }
 
     override fun onDestroyView() {
