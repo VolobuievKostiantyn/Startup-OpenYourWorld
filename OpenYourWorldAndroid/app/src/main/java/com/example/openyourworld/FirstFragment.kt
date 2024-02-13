@@ -14,6 +14,8 @@ import com.example.openyourworld.databinding.FragmentFirstBinding
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
+    // A reference to the service used to get location updates.
+    private var mService: LocationTrackingService? = null;
 
     // This property is only valid between onCreateView and
     // onDestroyView.
