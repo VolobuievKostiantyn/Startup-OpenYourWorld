@@ -16,11 +16,24 @@
 
 package com.example.openyourworld
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
-import android.widget.Button
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -30,7 +43,6 @@ import androidx.work.WorkerParameters
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import org.w3c.dom.Text
 import java.lang.reflect.Modifier
 import java.util.concurrent.TimeUnit
 
@@ -68,6 +80,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
         }
         return Result.success()
     }
+    @Composable
     fun BgLocationAccessScreen() {
         // Request for foreground permissions first
         PermissionBox(
@@ -88,7 +101,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
             },
         )
     }
-
+    @Composable
     private fun BackgroundLocationControls() {
         val context = LocalContext.current
         val workManager = WorkManager.getInstance(context)
