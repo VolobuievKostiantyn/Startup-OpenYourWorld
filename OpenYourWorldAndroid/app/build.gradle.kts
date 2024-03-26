@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.openyourworld"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.openyourworld"
@@ -32,6 +32,11 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
 }
 
@@ -44,8 +49,9 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation("androidx.compose.animation:animation:1.6.3")
-    implementation("androidx.compose.material:material:1.6.3")
+    implementation("androidx.compose.animation:animation:1.6.4")
+    implementation("androidx.compose.material:material:1.6.4")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.4")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
     implementation("com.google.android.gms:play-services-location:21.2.0")
