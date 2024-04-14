@@ -80,6 +80,10 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
         }
         return Result.success()
     }
+
+    //name = "Location - Background Location updates";
+    //description = "This Sample demonstrate how to access location and get location updates when app is in background";
+    //documentation = "https://developer.android.com/training/location/background";
     @Composable
     fun BgLocationAccessScreen() {
         // Request for foreground permissions first
