@@ -1,11 +1,11 @@
 # Startup-OpenYourWorld
 Todo
-- [ ] add Rust
-- [ ] add SQL
-- [ ] add ML
-- [ ] add AWS
-- [ ] Add app to playstore/galaxy store, create 
-- [ ] OYW whatwhyhow pptx and send to startup-incubator
+- [ ] Add Rust
+- [ ] Add SQL
+- [ ] Add ML
+- [ ] Add AWS
+- [ ] Add app to playstore/galaxy store
+- [ ] Create OYW whatwhyhow pptx and send to startup-incubator
 
 In progress
 - [ ] Background location service
