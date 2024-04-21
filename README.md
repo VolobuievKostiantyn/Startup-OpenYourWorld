@@ -1,9 +1,9 @@
 # Startup-OpenYourWorld
 Todo
-- [ ] Add Rust
-- [ ] Add SQL
-- [ ] Add ML
-- [ ] Add AWS
+- [ ] Add Rust module
+- [ ] Add SQL module
+- [ ] Add ML module
+- [ ] Add AWS server functionality
 - [ ] Add app to playstore/galaxy store
 - [ ] Create OYW whatwhyhow pptx and send to startup-incubator
 
