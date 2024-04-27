@@ -9,7 +9,7 @@ Todo
 
 In progress
 - [ ] Foreground location service
-follow https://www.youtube.com/watch?v=xTVeFJZQ28c (Start from 10:00) and foreground location sample → https://github.com/android/codelab-while-in-use-location to get location log
+follow https://github.com/android/platform-samples/blob/main/samples/location/src/main/java/com/example/platform/location/bglocationaccess/BgLocationAccessScreen.kt to get location log
 
 Done
 - [x] Initial commit
