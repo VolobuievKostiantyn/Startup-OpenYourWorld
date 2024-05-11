@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.navigation.fragment.findNavController
 import com.example.openyourworld.databinding.FragmentFirstBinding
@@ -36,11 +37,10 @@ class FirstFragment : Fragment() {
 
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            // Get location updates here
+            // Todo: fix composable annotation
+            mService?.BgLocationAccessScreen()
         }
-
-        // Get location updates here
-        // Todo: fix composable annotation
-        mService.BgLocationAccessScreen()
     }
 
     override fun onDestroyView() {
