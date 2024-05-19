@@ -12,6 +12,11 @@
         android:layout_gravity="bottom|end"
         android:padding="10dp">
 
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <Button
             android:id="@+id/button_first"
             android:layout_width="wrap_content"
