@@ -96,10 +96,18 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
             onGranted = {
                 // From Android 10 onwards request for background permission only after fine or coarse is granted
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    Log.d(
+                        TAG,
+                        "Current Android Version is less than Android 10",
+                    )
                     PermissionBox(permissions = listOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
                         BackgroundLocationControls()
                     }
                 } else {
+                    Log.d(
+                        TAG,
+                        "Current Android Version is more than Android 10",
+                    )
                     BackgroundLocationControls()
                 }
             },
