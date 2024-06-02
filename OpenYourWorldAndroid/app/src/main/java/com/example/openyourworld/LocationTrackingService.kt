@@ -86,6 +86,10 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
     //documentation = "https://developer.android.com/training/location/background";
     @Composable
     fun BgLocationAccessScreen() {
+        Log.d(
+            TAG,
+            "Get Background Location Access screen",
+        )
         // Request for foreground permissions first
         PermissionBox(
             permissions = listOf(

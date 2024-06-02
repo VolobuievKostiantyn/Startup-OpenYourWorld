@@ -44,6 +44,9 @@ class FirstFragment : Fragment() {
             // Get location updates here
             Log.d(TAG, "Getting location updates started")
             //todo: add log of current location
+
+            // Todo: check how to create LocationTrackingService constructor to create mService
+            // mService = LocationTrackingService(requireContext().applicationContext, ????)
             mService?.BgLocationAccessScreen()
             Log.d(TAG, "Getting location updates ended")
         }
