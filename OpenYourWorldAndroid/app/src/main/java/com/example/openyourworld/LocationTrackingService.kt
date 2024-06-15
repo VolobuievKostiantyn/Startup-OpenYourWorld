@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,11 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
-import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -49,35 +51,34 @@ import java.util.concurrent.TimeUnit
 // Implement a background service for continuous location tracking.
 // Use the Android Location API to obtain location updates.
 // based on this example https://github.com/android/platform-samples/tree/main/samples/location/src/main/java/com/example/platform/location/bglocationaccess
-class LocationTrackingService(context: Context, param: WorkerParameters) :
-    CoroutineWorker(context, param) {
+class LocationTrackingService(context: Context, param: WorkerParameters) : Worker(context, param) {
     private val TAG: String = LocationTrackingService::class.java.getSimpleName();
 
-    companion object {
-        // unique name for the work
-        val workName = "LocationTrackingService"
-        private const val TAG = "BackgroundLocationWork"
-    }
+    // unique name for the work
+    private val workName = "LocationTrackingService"
     private val locationClient = LocationServices.getFusedLocationProviderClient(context)
 
-    override suspend fun doWork(): Result {
+    override fun doWork(): Result {
+        Log.i(TAG,"doWork start")
         if (ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            Log.i(TAG,"checkSelfPermission: location permissions denied")
             return Result.failure()
         }
         locationClient.getCurrentLocation(
             Priority.PRIORITY_BALANCED_POWER_ACCURACY, CancellationTokenSource().token,
         ).addOnSuccessListener { location ->
-            location?.let {
-                Log.d(
-                    TAG,
-                    "Current Location = [lat : ${location.latitude}, lng : ${location.longitude}]",
-                )
+            if (location != null) {
+                // Use the location object
+                Toast.makeText(applicationContext, "Location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
             }
         }
+        Log.i(TAG,"doWork end")
         return Result.success()
     }
 
@@ -126,7 +127,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
         data class ControlsState(val text: String, val action: String, val onClick: () -> Unit)
 
         // Observe the worker state to show enable/disable UI
-        val workerState by workManager.getWorkInfosForUniqueWorkLiveData(LocationTrackingService.workName)
+        val workerState by workManager.getWorkInfosForUniqueWorkLiveData(workName)
             .observeAsState()
 
         val controlsState = remember(workerState) {
@@ -137,7 +138,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
                     text = "Check the logcat for location updates every 15 min",
                     action = "Disable updates",
                     onClick = {
-                        workManager.cancelUniqueWork(LocationTrackingService.workName)
+                        workManager.cancelUniqueWork(workName)
                     },
                 )
             } else {
@@ -147,7 +148,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
                     onClick = {
                         // Schedule a periodic worker to check for location every 15 min
                         workManager.enqueueUniquePeriodicWork(
-                            LocationTrackingService.workName,
+                            workName,
                             ExistingPeriodicWorkPolicy.KEEP,
                             PeriodicWorkRequestBuilder<LocationTrackingService>(
                                 15,
@@ -170,6 +171,39 @@ class LocationTrackingService(context: Context, param: WorkerParameters) :
             Button(onClick = controlsState.onClick) {
                 Text(text = controlsState.action)
             }
+        }
+    }
+
+    // extra static values and methods
+    companion object {
+        fun getLastKnownLocation(fusedLocationClient: FusedLocationProviderClient, context: Context) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        // Use the location object
+                        Toast.makeText(
+                            context,
+                            "Location: ${location.latitude}, ${location.longitude}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Location not available. Please turn on location",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
         }
     }
 }

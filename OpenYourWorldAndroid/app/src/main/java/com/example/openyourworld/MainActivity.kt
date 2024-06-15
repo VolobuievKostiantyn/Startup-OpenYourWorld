@@ -1,21 +1,26 @@
 package com.example.openyourworld
 
+import android.content.pm.PackageManager
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
 import com.example.openyourworld.databinding.ActivityMainBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +36,33 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener {
             Toast.makeText(this, "Send email to author", Toast.LENGTH_LONG).show()
+        }
+
+        checkLocationPermissions() // Todo: move this to some locationHelper class
+    }
+
+    private fun checkLocationPermissions() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+
+        if (ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted, request it
+            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            // Permission already granted, get the location
+            //LocationTrackingService.getLastKnownLocation(this.fusedLocationClient, this)
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Permission is granted, get the location
+            //LocationTrackingService.getLastKnownLocation(this.fusedLocationClient, this)
+        } else {
+            // Permission denied
+            Toast.makeText(applicationContext, "Location permission denied", Toast.LENGTH_SHORT).show()
         }
     }
 

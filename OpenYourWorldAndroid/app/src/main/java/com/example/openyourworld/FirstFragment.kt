@@ -38,7 +38,6 @@ class FirstFragment : Fragment() {
     ): View? {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
-        workManager = WorkManager.getInstance(requireContext().applicationContext)
         return binding.root
     }
 
@@ -51,19 +50,17 @@ class FirstFragment : Fragment() {
         composeView.setContent {
             // Get location updates here
             Log.d(TAG, "Getting location updates started")
-            //todo: add log of current location
 
-            // Todo: check how to create LocationTrackingService constructor to create mService
-            //mService = LocationTrackingService(requireContext().applicationContext, ????)
             val serviceName = LocationTrackingService::class.java.name
             val componentName = ComponentName(PACKAGE_NAME, serviceName)
+
             val oneTimeWorkRequest = buildOneTimeWorkRemoteWorkRequest(
                 componentName,
                 LocationTrackingService::class.java
             )
+            workManager = WorkManager.getInstance(requireContext().applicationContext)
             workManager?.enqueue(oneTimeWorkRequest)
-            // todo: continue develop using next example: https://github.com/android/architecture-components-samples/blob/main/WorkManagerMultiprocessSample/app/src/main/java/com/example/background/multiprocess/MainActivity.kt
-            //find the way to call mService?.BgLocationAccessScreen()
+
             Log.d(TAG, "Getting location updates ended")
         }
 
