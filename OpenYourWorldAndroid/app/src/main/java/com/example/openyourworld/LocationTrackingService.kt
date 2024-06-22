@@ -17,9 +17,11 @@
 package com.example.openyourworld
 
 import android.Manifest
+import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -37,11 +39,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ListenableWorker
+import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.multiprocess.RemoteListenableWorker
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -78,6 +84,9 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
             }
         }
+
+        scheduleWork(applicationContext)
+
         Log.i(TAG,"doWork end")
         return Result.success()
     }
@@ -118,6 +127,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
             },
         )
     }
+
     @Composable
     private fun BackgroundLocationControls() {
         val context = LocalContext.current
@@ -176,6 +186,38 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
 
     // extra static values and methods
     companion object {
+        private const val LOCATION_UPDATE_INTERVAL = 5L // todo: modify duration if needed
+        private var workManager: WorkManager? = null
+
+        fun scheduleWork(context: Context) {
+            val serviceName = LocationTrackingService::class.java.name
+            val componentName = ComponentName(PACKAGE_NAME, serviceName)
+            val oneTimeWorkRequest = buildOneTimeWorkRemoteWorkRequest(
+                componentName,
+                LocationTrackingService::class.java
+            )
+            workManager = WorkManager.getInstance(context)
+            workManager?.enqueue(oneTimeWorkRequest)
+        }
+
+        fun buildOneTimeWorkRemoteWorkRequest(
+            componentName: ComponentName
+            , listenableWorkerClass: Class<out ListenableWorker>
+        ): OneTimeWorkRequest {
+            // ARGUMENT_PACKAGE_NAME and ARGUMENT_CLASS_NAME are used to determine the service
+            // that a Worker binds to. By specifying these parameters, we can designate the process a
+            // Worker runs in.
+            val data: Data = Data.Builder()
+                .putString(RemoteListenableWorker.ARGUMENT_PACKAGE_NAME, componentName.packageName)
+                .putString(RemoteListenableWorker.ARGUMENT_CLASS_NAME, componentName.className)
+                .build()
+
+            return OneTimeWorkRequest.Builder(listenableWorkerClass)
+                .setInputData(data)
+                .setInitialDelay(LOCATION_UPDATE_INTERVAL, TimeUnit.SECONDS)
+                .build()
+        }
+
         fun getLastKnownLocation(fusedLocationClient: FusedLocationProviderClient, context: Context) {
             if (ActivityCompat.checkSelfPermission(
                     context,
@@ -189,21 +231,21 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
             }
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location ->
-                    if (location != null) {
-                        // Use the location object
-                        Toast.makeText(
-                            context,
-                            "Location: ${location.latitude}, ${location.longitude}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Location not available. Please turn on location",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                if (location != null) {
+                    // Use the location object
+                    Toast.makeText(
+                        context,
+                        "Location: ${location.latitude}, ${location.longitude}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Location not available. Please turn on location",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+            }
         }
     }
 }
