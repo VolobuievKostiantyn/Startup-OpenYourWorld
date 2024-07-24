@@ -12,6 +12,15 @@
         android:layout_gravity="bottom|end"
         android:padding="10dp">
 
+        <org.osmdroid.views.MapView
+            android:id="@+id/osmmap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/compose_view"
             android:layout_width="match_parent"

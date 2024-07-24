@@ -57,6 +57,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
-    implementation("com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.2")
+    implementation("org.osmdroid:osmdroid-android:6.1.14")
+    implementation("androidx.preference:preference:1.1.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
     implementation("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
 }

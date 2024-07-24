@@ -9,6 +9,10 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.openyourworld.databinding.FragmentFirstBinding
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.views.MapView
+import androidx.preference.PreferenceManager
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -17,6 +21,7 @@ class FirstFragment : Fragment() {
     private var TAG: String = javaClass.simpleName
     private val PACKAGE_NAME = "com.example.openyourworld"
     private var _binding: FragmentFirstBinding? = null
+    private lateinit var map: MapView
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -34,6 +39,13 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e(TAG, "onViewCreated")
+        // Load/initialize the osmdroid configuration
+        // todo: fix the build error
+        Configuration.getInstance().load(requireContext().applicationContext, getPreferences(MODE_PRIVATE))
+
+        // Inflate and create the map
+        map = view.findViewById(R.id.osmmap)
+        map.setTileSource(TileSourceFactory.MAPNIK)
 
         // Find the ComposeView and set the content
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
