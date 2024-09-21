@@ -1,6 +1,7 @@
 package com.example.openyourworld
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,6 @@ import com.example.openyourworld.databinding.FragmentFirstBinding
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
-import androidx.preference.PreferenceManager
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -39,9 +39,9 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e(TAG, "onViewCreated")
+
         // Load/initialize the osmdroid configuration
-        // todo: fix the build error
-        Configuration.getInstance().load(requireContext().applicationContext, getPreferences(MODE_PRIVATE))
+        Configuration.getInstance().load(requireContext().applicationContext, PreferenceManager.getDefaultSharedPreferences(requireContext().applicationContext))
 
         // Inflate and create the map
         map = view.findViewById(R.id.osmmap)
