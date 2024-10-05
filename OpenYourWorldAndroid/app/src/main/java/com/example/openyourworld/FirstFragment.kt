@@ -19,7 +19,6 @@ import org.osmdroid.views.MapView
  */
 class FirstFragment : Fragment() {
     private var TAG: String = javaClass.simpleName
-    private val PACKAGE_NAME = "com.example.openyourworld"
     private var _binding: FragmentFirstBinding? = null
     private lateinit var map: MapView
 
@@ -38,7 +37,7 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e(TAG, "onViewCreated")
+        Log.e(TAG, "FirsFragment onViewCreated")
 
         // Load/initialize the osmdroid configuration
         Configuration.getInstance().load(requireContext().applicationContext, PreferenceManager.getDefaultSharedPreferences(requireContext().applicationContext))
