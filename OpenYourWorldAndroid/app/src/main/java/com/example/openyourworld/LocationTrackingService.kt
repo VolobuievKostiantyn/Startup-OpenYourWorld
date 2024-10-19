@@ -218,6 +218,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 .build()
         }
 
+        // todo: remove if it will be unused
         fun getLastKnownLocation(fusedLocationClient: FusedLocationProviderClient, context: Context) {
             if (ActivityCompat.checkSelfPermission(
                     context,
