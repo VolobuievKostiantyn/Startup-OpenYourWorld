@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.openyourworld.databinding.FragmentFirstBinding
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
 
 /**
@@ -45,6 +47,7 @@ class FirstFragment : Fragment() {
         // Inflate and create the map
         map = view.findViewById(R.id.osmmap)
         map.setTileSource(TileSourceFactory.MAPNIK)
+        setMapCenter(40.7128, -74.0060, 10.0) // For example, New York City with zoom level 10
 
         // Find the ComposeView and set the content
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
@@ -63,5 +66,12 @@ class FirstFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // Set the map's center to a specific coordinate
+    private fun setMapCenter(latitude: Double, longitude: Double, zoomLevel: Double) {
+        val mapController = map.controller as MapController
+        mapController.setZoom(zoomLevel.toInt())  // Set initial zoom level
+        mapController.setCenter(GeoPoint(latitude, longitude))
     }
 }
