@@ -39,7 +39,7 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e(TAG, "FirsFragment onViewCreated")
+        Log.e(TAG, "FirstFragment onViewCreated")
 
         // Load/initialize the osmdroid configuration
         Configuration.getInstance().load(requireContext().applicationContext, PreferenceManager.getDefaultSharedPreferences(requireContext().applicationContext))
@@ -47,7 +47,6 @@ class FirstFragment : Fragment() {
         // Inflate and create the map
         map = view.findViewById(R.id.osmmap)
         map.setTileSource(TileSourceFactory.MAPNIK)
-        setMapCenter(40.7128, -74.0060, 10.0) // For example, New York City with zoom level 10
 
         // Find the ComposeView and set the content
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
@@ -57,6 +56,10 @@ class FirstFragment : Fragment() {
             LocationTrackingService.scheduleWork(requireContext().applicationContext)
             Log.d(TAG, "Getting location updates ended")
         }
+
+        //Todo: add current position button and set the map each time it is pressed
+        setMapCenter(40.7128, -74.0060, 10.0) // For example, New York City with zoom level 10
+
 
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
