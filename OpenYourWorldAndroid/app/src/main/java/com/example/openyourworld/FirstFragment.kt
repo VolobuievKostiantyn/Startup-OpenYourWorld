@@ -61,7 +61,7 @@ class FirstFragment : Fragment() {
         setMapCenter(40.7128, -74.0060, 10.0) // For example, New York City with zoom level 10
 
 
-        binding.buttonFirst.setOnClickListener {
+        binding.buttonNextFragment.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
     }

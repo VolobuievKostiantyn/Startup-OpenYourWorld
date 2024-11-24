@@ -6,4 +6,5 @@
     <string name="second_fragment_label">Statistics</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="current_position">Current Position</string>
 </resources>
