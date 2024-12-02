@@ -57,9 +57,14 @@ class FirstFragment : Fragment() {
             Log.d(TAG, "Getting location updates ended")
         }
 
-        //Todo: add current position button and set the map each time it is pressed
+        // Default position
         setMapCenter(40.7128, -74.0060, 10.0) // For example, New York City with zoom level 10
 
+        // Set current position
+        binding.buttonCurrentPosition.setOnClickListener {
+            //TODO: get latitude and longitude from LocationTrackingService.scheduleWork(requireContext().applicationContext) and set here
+            setMapCenter(40.0, -74.0, 10.0)
+        }
 
         binding.buttonNextFragment.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
