@@ -16,6 +16,10 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
 
+private const val DEFAULT_LATITUDE_ON_MAP_VIEW = 40.7128
+private const val DEFAULT_LONGITUDE_ON_MAP_VIEW = -74.0060
+private const val DEFAULT_MAT_VIEW_ZOOM_LEVEL = 10.0
+
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
@@ -58,12 +62,14 @@ class FirstFragment : Fragment() {
         }
 
         // Default position
-        setMapCenter(40.7128, -74.0060, 10.0) // For example, New York City with zoom level 10
+        setMapCenter(DEFAULT_LATITUDE_ON_MAP_VIEW, DEFAULT_LONGITUDE_ON_MAP_VIEW,
+            DEFAULT_MAT_VIEW_ZOOM_LEVEL
+        ) // For example, New York City with zoom level 10
 
         // Set current position
         binding.buttonCurrentPosition.setOnClickListener {
             //TODO: get latitude and longitude from LocationTrackingService.scheduleWork(requireContext().applicationContext) and set here
-            setMapCenter(40.0, -74.0, 10.0)
+            setMapCenter(40.0, -74.0, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
         }
 
         binding.buttonNextFragment.setOnClickListener {
