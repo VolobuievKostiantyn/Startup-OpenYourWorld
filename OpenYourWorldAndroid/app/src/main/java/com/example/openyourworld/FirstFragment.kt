@@ -16,6 +16,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
 
+// Defaule position, for example, New York City
 private const val DEFAULT_LATITUDE_ON_MAP_VIEW = 40.7128
 private const val DEFAULT_LONGITUDE_ON_MAP_VIEW = -74.0060
 private const val DEFAULT_MAT_VIEW_ZOOM_LEVEL = 10.0
@@ -64,7 +65,7 @@ class FirstFragment : Fragment() {
         // Default position
         setMapCenter(DEFAULT_LATITUDE_ON_MAP_VIEW, DEFAULT_LONGITUDE_ON_MAP_VIEW,
             DEFAULT_MAT_VIEW_ZOOM_LEVEL
-        ) // For example, New York City with zoom level 10
+        )
 
         // Set current position
         binding.buttonCurrentPosition.setOnClickListener {
