@@ -69,8 +69,12 @@ class FirstFragment : Fragment() {
 
         // Set current position
         binding.buttonCurrentPosition.setOnClickListener {
-            //TODO: get latitude and longitude from LocationTrackingService.scheduleWork(requireContext().applicationContext) and set here
-            setMapCenter(40.0, -74.0, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
+            //In progress: get latitude and longitude from LocationTrackingService.scheduleWork(requireContext().applicationContext) and set here
+            // example, setMapCenter(40.0, -74.0, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
+            LocationTrackingService.GlobalVariables.latitude?.let { it1 -> LocationTrackingService.GlobalVariables.longitude?.let { it2 ->
+                setMapCenter(it1,
+                    it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
+            } }
         }
 
         binding.buttonNextFragment.setOnClickListener {

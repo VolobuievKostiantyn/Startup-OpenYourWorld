@@ -64,6 +64,11 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
     private val workName = "LocationTrackingService"
     private val locationClient = LocationServices.getFusedLocationProviderClient(context)
 
+    object GlobalVariables {
+        var latitude: Double? = null
+        var longitude: Double? = null
+    }
+
     override fun doWork(): Result {
         Log.i(TAG,"doWork start")
         if (ActivityCompat.checkSelfPermission(
@@ -79,6 +84,8 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
         ).addOnSuccessListener { location ->
             if (location != null) {
                 // Use the location object
+                GlobalVariables.latitude = location.latitude
+                GlobalVariables.longitude = location.longitude
                 Toast.makeText(applicationContext, "Location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
