@@ -86,7 +86,8 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 // Use the location object
                 GlobalVariables.latitude = location.latitude
                 GlobalVariables.longitude = location.longitude
-                Toast.makeText(applicationContext, "Location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
+                // Todo: add current position to data base and then draw this position on map
             } else {
                 Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
             }
@@ -243,7 +244,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                     // Use the location object
                     Toast.makeText(
                         context,
-                        "Location: ${location.latitude}, ${location.longitude}",
+                        "Current location: ${location.latitude}, ${location.longitude}",
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
