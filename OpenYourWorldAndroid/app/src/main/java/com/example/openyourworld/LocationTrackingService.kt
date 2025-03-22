@@ -48,6 +48,7 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.multiprocess.RemoteListenableWorker
+import com.example.openyourworld.LocationTrackingService.GlobalVariables.dbHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -67,6 +68,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
     object GlobalVariables {
         var latitude: Double? = null
         var longitude: Double? = null
+        lateinit var dbHelper: LocationDatabaseHelper
     }
 
     override fun doWork(): Result {
@@ -87,7 +89,19 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 GlobalVariables.latitude = location.latitude
                 GlobalVariables.longitude = location.longitude
                 Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
-                // Todo: add current position to data base and then draw this position on map
+                // Todo: add current position to data base and then
+                dbHelper = LocationDatabaseHelper(applicationContext)
+
+                // Insert a sample location
+                val insertedId = dbHelper.insertLocation(location.latitude, location.longitude) // Example: San Francisco
+                Toast.makeText(applicationContext, "Location saved with ID: $insertedId", Toast.LENGTH_SHORT).show()
+
+                // Fetch all locations
+                val locations = dbHelper.getAllLocations()
+                locations.forEach {
+                    println("ID: ${it.id}, Lat: ${it.latitude}, Lon: ${it.longitude}")
+                }
+                // Todo: draw current position on map
             } else {
                 Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
             }
