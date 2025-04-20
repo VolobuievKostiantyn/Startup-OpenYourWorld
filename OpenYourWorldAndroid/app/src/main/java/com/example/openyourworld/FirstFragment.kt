@@ -15,6 +15,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 
 // Defaule position, for example, New York City
 private const val DEFAULT_LATITUDE_ON_MAP_VIEW = 40.7128
@@ -63,14 +64,14 @@ class FirstFragment : Fragment() {
         }
 
         // Default position
-        setMapCenter(DEFAULT_LATITUDE_ON_MAP_VIEW, DEFAULT_LONGITUDE_ON_MAP_VIEW,
+        setPositionMarker(DEFAULT_LATITUDE_ON_MAP_VIEW, DEFAULT_LONGITUDE_ON_MAP_VIEW,
             DEFAULT_MAT_VIEW_ZOOM_LEVEL
         )
 
         // Set current position
         binding.buttonCurrentPosition.setOnClickListener {
             LocationTrackingService.GlobalVariables.latitude?.let { it1 -> LocationTrackingService.GlobalVariables.longitude?.let { it2 ->
-                setMapCenter(it1,
+                setPositionMarker(it1,
                     it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
             } }
         }
@@ -86,9 +87,18 @@ class FirstFragment : Fragment() {
     }
 
     // Set the map's center to a specific coordinate
-    private fun setMapCenter(latitude: Double, longitude: Double, zoomLevel: Double) {
+    private fun setPositionMarker(latitude: Double, longitude: Double, zoomLevel: Double) {
+        val geoPoint = GeoPoint(latitude, longitude)
+        val marker = Marker(map)
+        marker.position = geoPoint
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        marker.title = "You are here"
+        map.overlays.add(marker)
+
         val mapController = map.controller as MapController
-        mapController.setZoom(zoomLevel.toInt())  // Set initial zoom level
-        mapController.setCenter(GeoPoint(latitude, longitude))
+        mapController.setZoom(zoomLevel.toInt())
+        mapController.setCenter(geoPoint)
+
+        map.invalidate() // Refresh the map
     }
 }

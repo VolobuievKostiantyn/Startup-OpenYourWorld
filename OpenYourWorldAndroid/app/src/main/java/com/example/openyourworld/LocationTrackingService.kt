@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit
 class LocationTrackingService(context: Context, param: WorkerParameters) : Worker(context, param) {
     private val TAG: String = LocationTrackingService::class.java.getSimpleName();
 
-    // unique name for the work
+    // Unique name for the work
     private val workName = "LocationTrackingService"
     private val locationClient = LocationServices.getFusedLocationProviderClient(context)
 
@@ -89,19 +89,20 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 GlobalVariables.latitude = location.latitude
                 GlobalVariables.longitude = location.longitude
                 Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
-                // Todo: add current position to data base and then
+
+                // Todo: draw current position on map
+
+                // Add current position to DB
                 dbHelper = LocationDatabaseHelper(applicationContext)
 
-                // Insert a sample location
-                val insertedId = dbHelper.insertLocation(location.latitude, location.longitude) // Example: San Francisco
-                Toast.makeText(applicationContext, "Location saved with ID: $insertedId", Toast.LENGTH_SHORT).show()
+                val insertedId = dbHelper.insertLocation(location.latitude, location.longitude)
+                println("Location saved to DB with ID: $insertedId")
 
                 // Fetch all locations
-                val locations = dbHelper.getAllLocations()
-                locations.forEach {
-                    println("ID: ${it.id}, Lat: ${it.latitude}, Lon: ${it.longitude}")
-                }
-                // Todo: draw current position on map
+//                val locations = dbHelper.getAllLocations()
+//                locations.forEach {
+//                    println("ID: ${it.id}, Lat: ${it.latitude}, Lon: ${it.longitude}")
+//                }
             } else {
                 Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
             }
@@ -206,7 +207,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
         }
     }
 
-    // extra static values and methods
+    // Extra static values and methods
     companion object {
         private const val LOCATION_UPDATE_INTERVAL = 5L // todo: modify duration if needed
         private var workManager: WorkManager? = null
