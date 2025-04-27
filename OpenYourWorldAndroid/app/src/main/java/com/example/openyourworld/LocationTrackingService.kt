@@ -90,8 +90,6 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 GlobalVariables.longitude = location.longitude
                 Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
 
-                // Todo: draw current position on map
-
                 // Add current position to DB
                 dbHelper = LocationDatabaseHelper(applicationContext)
 
@@ -99,10 +97,17 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 println("Location saved to DB with ID: $insertedId")
 
                 // Fetch all locations
-//                val locations = dbHelper.getAllLocations()
+                val locations = dbHelper.getAllLocations()
+                if (locations.isNotEmpty()) {
+                    val firstLocation = locations[0]
+                    println("ID: ${firstLocation.id}, Lat: ${firstLocation.latitude}, Lon: ${firstLocation.longitude}")
+                }
 //                locations.forEach {
 //                    println("ID: ${it.id}, Lat: ${it.latitude}, Lon: ${it.longitude}")
 //                }
+
+                // Todo: draw current position on map here
+
             } else {
                 Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
             }
