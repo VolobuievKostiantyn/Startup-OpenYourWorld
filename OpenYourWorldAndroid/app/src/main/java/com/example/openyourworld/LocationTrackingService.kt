@@ -96,7 +96,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 val insertedId = dbHelper.insertLocation(location.latitude, location.longitude)
                 println("Location saved to DB with ID: $insertedId")
 
-                // Fetch all locations
+                // Fetch first location
                 val locations = dbHelper.getAllLocations()
                 if (locations.isNotEmpty()) {
                     val firstLocation = locations[0]
@@ -105,9 +105,6 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
 //                locations.forEach {
 //                    println("ID: ${it.id}, Lat: ${it.latitude}, Lon: ${it.longitude}")
 //                }
-
-                // Todo: draw current position on map here
-
             } else {
                 Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
             }

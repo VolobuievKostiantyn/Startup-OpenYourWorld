@@ -1,5 +1,6 @@
 package com.example.openyourworld
 
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -16,6 +17,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polygon
 
 // Defaule position, for example, New York City
 private const val DEFAULT_LATITUDE_ON_MAP_VIEW = 40.7128
@@ -74,6 +76,31 @@ class FirstFragment : Fragment() {
                 setPositionMarker(it1,
                     it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
             } }
+
+            // Mark area for two positions from the DB on the Osmdroid Map
+            // Todo: Find the way how to mark one point (point by point) not the whole polygon
+            val latitude = LocationTrackingService.GlobalVariables.latitude
+            val longitude = LocationTrackingService.GlobalVariables.longitude
+            val point1 = GeoPoint(latitude!!, longitude!!)
+            val testShift = 0.1
+            val point2 = GeoPoint(latitude + testShift, longitude + testShift)
+
+            val areaPoints = ArrayList<GeoPoint>()
+            areaPoints.add(GeoPoint(point1.latitude, point1.longitude))
+            areaPoints.add(GeoPoint(point1.latitude, point2.longitude))
+            areaPoints.add(GeoPoint(point2.latitude, point2.longitude))
+            areaPoints.add(GeoPoint(point2.latitude, point1.longitude))
+            areaPoints.add(GeoPoint(point1.latitude, point1.longitude)) // close the loop
+
+            val polygon = Polygon()
+            polygon.points = areaPoints
+            polygon.fillPaint.color = Color.argb(100, 0, 0, 255) // semi-transparent blue
+            polygon.strokeColor = Color.BLUE
+            polygon.strokeWidth = 2f
+
+            map.overlays.add(polygon)
+            map.invalidate()
+
         }
 
         binding.buttonNextFragment.setOnClickListener {
