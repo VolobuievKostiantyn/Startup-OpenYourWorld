@@ -1,6 +1,8 @@
 package com.example.openyourworld
 
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -17,6 +19,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polygon
 
 // Defaule position, for example, New York City
@@ -78,29 +81,28 @@ class FirstFragment : Fragment() {
             } }
 
             // Mark area for two positions from the DB on the Osmdroid Map
-            // Todo: Find the way how to mark one point (point by point) not the whole polygon
             val latitude = LocationTrackingService.GlobalVariables.latitude
             val longitude = LocationTrackingService.GlobalVariables.longitude
+            Log.d(TAG, "latitude = " + latitude)
+            Log.d(TAG, "longitude = " + longitude)
             val point1 = GeoPoint(latitude!!, longitude!!)
-            val testShift = 0.1
+            val testShift = 0.01
+            // Todo: draw second point
             val point2 = GeoPoint(latitude + testShift, longitude + testShift)
 
-            val areaPoints = ArrayList<GeoPoint>()
-            areaPoints.add(GeoPoint(point1.latitude, point1.longitude))
-            areaPoints.add(GeoPoint(point1.latitude, point2.longitude))
-            areaPoints.add(GeoPoint(point2.latitude, point2.longitude))
-            areaPoints.add(GeoPoint(point2.latitude, point1.longitude))
-            areaPoints.add(GeoPoint(point1.latitude, point1.longitude)) // close the loop
+            val circle = Polygon()
+            circle.points = Polygon.pointsAsCircle(point1, 5.0) // radius in meters
 
-            val polygon = Polygon()
-            polygon.points = areaPoints
-            polygon.fillPaint.color = Color.argb(100, 0, 0, 255) // semi-transparent blue
-            polygon.strokeColor = Color.BLUE
-            polygon.strokeWidth = 2f
+            // Set fill color: A = 128 (50% transparency), R = 0, G = 255, B = 0
+            circle.fillPaint.color = Color.argb(64, 0, 255, 0)  // Semi-transparent green
+            circle.fillPaint.style = Paint.Style.FILL
 
-            map.overlays.add(polygon)
+            // Remove outline
+            circle.strokeColor = Color.TRANSPARENT
+            circle.strokeWidth = 0f
+
+            map.overlays.add(circle)
             map.invalidate()
-
         }
 
         binding.buttonNextFragment.setOnClickListener {
