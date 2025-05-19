@@ -86,7 +86,7 @@ class FirstFragment : Fragment() {
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
             val point1 = GeoPoint(latitude!!, longitude!!)
-            val testShift = 0.01
+            val testShift = 0.02
             // Todo: draw second point
             val point2 = GeoPoint(latitude + testShift, longitude + testShift)
 
