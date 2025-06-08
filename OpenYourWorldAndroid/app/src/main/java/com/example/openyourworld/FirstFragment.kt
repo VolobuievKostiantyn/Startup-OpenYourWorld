@@ -85,24 +85,13 @@ class FirstFragment : Fragment() {
             val longitude = LocationTrackingService.GlobalVariables.longitude
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
+
+            // Todo: build a way of the green points (do below in cycle) and add it to the pptx demo slide
             val point1 = GeoPoint(latitude!!, longitude!!)
-            val testShift = 0.02
-            // Todo: draw second point
+            val testShift = 0.002
             val point2 = GeoPoint(latitude + testShift, longitude + testShift)
-
-            val circle = Polygon()
-            circle.points = Polygon.pointsAsCircle(point1, 5.0) // radius in meters
-
-            // Set fill color: A = 128 (50% transparency), R = 0, G = 255, B = 0
-            circle.fillPaint.color = Color.argb(64, 0, 255, 0)  // Semi-transparent green
-            circle.fillPaint.style = Paint.Style.FILL
-
-            // Remove outline
-            circle.strokeColor = Color.TRANSPARENT
-            circle.strokeWidth = 0f
-
-            map.overlays.add(circle)
-            map.invalidate()
+            drawTransparentGreenCircle(map, point1, 5.0)
+            drawTransparentGreenCircle(map, point2, 10.0)
         }
 
         binding.buttonNextFragment.setOnClickListener {
@@ -129,5 +118,21 @@ class FirstFragment : Fragment() {
         mapController.setCenter(geoPoint)
 
         map.invalidate() // Refresh the map
+    }
+
+    private fun drawTransparentGreenCircle(map: MapView, center: GeoPoint, radiusInMeters: Double) {
+        val circle = Polygon()
+        circle.points = Polygon.pointsAsCircle(center, radiusInMeters)
+
+        // Set semi-transparent green fill
+        circle.fillPaint.color = Color.argb(64, 0, 255, 0)
+        circle.fillPaint.style = Paint.Style.FILL
+
+        // Remove outline
+        circle.strokeColor = Color.TRANSPARENT
+        circle.strokeWidth = 0f
+
+        map.overlays.add(circle)
+        map.invalidate()
     }
 }
