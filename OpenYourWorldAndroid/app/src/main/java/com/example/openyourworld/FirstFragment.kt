@@ -86,12 +86,15 @@ class FirstFragment : Fragment() {
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
 
-            // Todo: build a way of the green points (do below in cycle) and add it to the pptx demo slide
+            // Todo: Emulate GPS movement in emulator and add it to the pptx demo slide
             val point1 = GeoPoint(latitude!!, longitude!!)
-            val testShift = 0.002
-            val point2 = GeoPoint(latitude + testShift, longitude + testShift)
-            drawTransparentGreenCircle(map, point1, 5.0)
-            drawTransparentGreenCircle(map, point2, 10.0)
+            val radiusInMeters = 5.0
+            drawTransparentGreenCircle(map, point1, radiusInMeters)
+            for (i in 1..10) {
+                val testShift = 0.0001 * i
+                val point2 = GeoPoint(latitude, longitude + testShift)
+                drawTransparentGreenCircle(map, point2, radiusInMeters)
+            }
         }
 
         binding.buttonNextFragment.setOnClickListener {
