@@ -86,15 +86,15 @@ class FirstFragment : Fragment() {
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
 
-            // Todo: Emulate GPS movement in emulator and add it to the pptx demo slide
+            // Todo: Emulate GPS movement in emulator using testMockLocation.kml and add it to the pptx demo slide
             val point1 = GeoPoint(latitude!!, longitude!!)
             val radiusInMeters = 5.0
             drawTransparentGreenCircle(map, point1, radiusInMeters)
-            for (i in 1..10) {
-                val testShift = 0.0001 * i
-                val point2 = GeoPoint(latitude, longitude + testShift)
-                drawTransparentGreenCircle(map, point2, radiusInMeters)
-            }
+//            for (i in 1..10) {
+//                val testShift = 0.0001 * i
+//                val point2 = GeoPoint(latitude, longitude + testShift)
+//                drawTransparentGreenCircle(map, point2, radiusInMeters)
+//            }
         }
 
         binding.buttonNextFragment.setOnClickListener {
