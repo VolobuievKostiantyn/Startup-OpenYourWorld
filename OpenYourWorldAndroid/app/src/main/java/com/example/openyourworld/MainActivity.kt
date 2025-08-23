@@ -34,10 +34,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener {
-            Toast.makeText(this, "Send email to author", Toast.LENGTH_LONG).show()
-        }
-
         checkLocationPermissions() // Todo: move this to some locationHelper class
     }
 

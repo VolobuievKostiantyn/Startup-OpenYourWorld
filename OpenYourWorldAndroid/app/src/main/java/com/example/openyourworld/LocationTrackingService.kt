@@ -88,7 +88,7 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 // Use the location object
                 GlobalVariables.latitude = location.latitude
                 GlobalVariables.longitude = location.longitude
-                Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
 
                 // Add current position to DB
                 dbHelper = LocationDatabaseHelper(applicationContext)
