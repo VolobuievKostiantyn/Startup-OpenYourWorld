@@ -74,11 +74,11 @@ class FirstFragment : Fragment() {
         )
 
         // Set current position
-//        binding.buttonCurrentPosition.setOnClickListener {
-//            LocationTrackingService.GlobalVariables.latitude?.let { it1 -> LocationTrackingService.GlobalVariables.longitude?.let { it2 ->
-//                setPositionMarker(it1,
-//                    it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
-//            } }
+        binding.buttonCurrentPosition.setOnClickListener {
+            LocationTrackingService.GlobalVariables.latitude?.let { it1 -> LocationTrackingService.GlobalVariables.longitude?.let { it2 ->
+                setPositionMarker(it1,
+                    it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
+            } }
 
             // Mark area for two positions from the DB on the Osmdroid Map
             val radiusInMeters = 5.0
@@ -87,89 +87,9 @@ class FirstFragment : Fragment() {
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
 
-        binding.buttonCurrentPosition.setOnClickListener {
-            59.437096.let { it1 -> 24.745296.let { it2 ->
-                setPositionMarker(it1,
-                    it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
-            } }
-
             // Todo: Emulate GPS movement in emulator using testMockLocation.kml and add it to the pptx demo slide
-//            val point1 = GeoPoint(latitude!!, longitude!!)
-//            drawTransparentGreenCircle(map, point1, radiusInMeters)
-
-            // 1. Define coordinates array (latitude, longitude pairs)
-            val coordinates = arrayOf(
-                // Segment 1: 59.437096, 24.745296 -> 59.4372183116503, 24.745714270516203
-                Pair(59.437096, 24.745296),
-                Pair(59.437107, 24.745315),
-                Pair(59.437118, 24.745334),
-                Pair(59.437129, 24.745353),
-                Pair(59.437140, 24.745372),
-                Pair(59.437151, 24.745391),
-                Pair(59.437162, 24.745410),
-                Pair(59.437173, 24.745429),
-                Pair(59.437184, 24.745448),
-                Pair(59.437195, 24.745467),
-                Pair(59.437206, 24.745486),
-                Pair(59.437218, 24.745714), // End of segment 1
-
-                // Segment 2: 59.4372183116503, 24.745714270516203 -> 59.43764142990578, 24.74489960045405
-                Pair(59.437230, 24.745700),
-                Pair(59.437250, 24.745650),
-                Pair(59.437280, 24.745580),
-                Pair(59.437310, 24.745510),
-                Pair(59.437340, 24.745440),
-                Pair(59.437370, 24.745370),
-                Pair(59.437400, 24.745300),
-                Pair(59.437430, 24.745230),
-                Pair(59.437460, 24.745160),
-                Pair(59.437490, 24.745090),
-                Pair(59.437520, 24.745020),
-                Pair(59.437550, 24.744950),
-                Pair(59.437580, 24.744880),
-                Pair(59.437611, 24.744910),
-                Pair(59.437641, 24.744900), // End of segment 2
-
-                // Segment 3: 59.43764142990578, 24.74489960045405 -> 59.437285466201935, 24.74443960161019
-                Pair(59.437620, 24.744880),
-                Pair(59.437590, 24.744850),
-                Pair(59.437560, 24.744820),
-                Pair(59.437530, 24.744790),
-                Pair(59.437500, 24.744760),
-                Pair(59.437470, 24.744730),
-                Pair(59.437440, 24.744700),
-                Pair(59.437410, 24.744670),
-                Pair(59.437380, 24.744640),
-                Pair(59.437350, 24.744610),
-                Pair(59.437320, 24.744580),
-                Pair(59.437290, 24.744550),
-                Pair(59.437285, 24.744440), // End of segment 3
-
-                // Segment 4: 59.437285466201935, 24.74443960161019 -> 59.43710543715213, 24.744712516372182
-                Pair(59.437270, 24.744460),
-                Pair(59.437250, 24.744490),
-                Pair(59.437230, 24.744520),
-                Pair(59.437210, 24.744550),
-                Pair(59.437190, 24.744580),
-                Pair(59.437170, 24.744610),
-                Pair(59.437150, 24.744640),
-                Pair(59.437130, 24.744670),
-                Pair(59.437110, 24.744700),
-                Pair(59.437105, 24.744713)  // End of segment 4
-            )
-
-            // 2. Loop through all coordinates
-            for ((lat, lon) in coordinates) {
-                val point = GeoPoint(lat, lon)
-
-                // Example: draw green dot for each coordinate
-                drawTransparentGreenCircle(map, point, radiusInMeters)
-            }
-//            for (i in 1..10) {
-//                val testShift = 0.0001 * i
-//                val point2 = GeoPoint(latitude, longitude + testShift)
-//                drawTransparentGreenCircle(map, point2, radiusInMeters)
-//            }
+            val point1 = GeoPoint(latitude!!, longitude!!)
+            drawTransparentGreenCircle(map, point1, radiusInMeters)
         }
 
         binding.buttonNextFragment.setOnClickListener {
