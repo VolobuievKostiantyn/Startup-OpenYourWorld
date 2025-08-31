@@ -81,6 +81,8 @@ class FirstFragment : Fragment() {
             } }
 
             // Mark area for two positions from the DB on the Osmdroid Map
+            // Todo: add emulation of gps movement in emulator android studio
+            // Todo: add git secure actions https://docs.github.com/en/actions/reference/security/secure-use
             val radiusInMeters = 5.0
             val latitude = LocationTrackingService.GlobalVariables.latitude
             val longitude = LocationTrackingService.GlobalVariables.longitude
