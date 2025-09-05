@@ -1,9 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
-    <name>Route Simulation: Pikk tn, Tallinn</name>
-    <Placemark><name>Start</name><Point><coordinates>24.7524,59.4415,0</coordinates></Point></Placemark>
-    <Placemark><name>Point 2</name><Point><coordinates>24.7526,59.4414,0</coordinates></Point></Placemark>
-    <Placemark><name>Destination</name><Point><coordinates>24.7528,59.4413,0</coordinates></Point></Placemark>
+    <name>Pikk tn Route Simulation</name>
+    <Placemark>
+        <name>Walking Route</name>
+        <LineString>
+            <tessellate>1</tessellate>
+            <coordinates>
+                24.7524,59.4415,0
+                24.7526,59.4414,0
+                24.7528,59.4413,0
+                24.7530,59.4412,0
+                24.7532,59.4411,0
+                24.7534,59.4410,0
+                24.7536,59.4409,0
+                24.7538,59.4408,0
+                24.7540,59.4407,0
+                24.7542,59.4406,0
+                24.7544,59.4405,0
+                24.7546,59.4404,0
+                24.7548,59.4403,0
+                24.7550,59.4402,0
+                24.7552,59.4401,0
+                24.7554,59.4400,0
+                24.7556,59.4399,0
+                24.7558,59.4398,0
+                24.7560,59.4397,0
+                24.7562,59.4396,0
+                24.7564,59.4395,0
+                24.7566,59.4394,0
+                24.7568,59.4393,0
+                24.7570,59.4392,0
+                24.7572,59.4391,0
+                24.7574,59.4390,0
+                24.7576,59.4389,0
+                24.7578,59.4388,0
+                24.7580,59.4387,0
+                24.7582,59.4386,0
+            </coordinates>
+        </LineString>
+    </Placemark>
 </Document>
 </kml>
