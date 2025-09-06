@@ -81,15 +81,16 @@ class FirstFragment : Fragment() {
             } }
 
             // Mark area for two positions from the DB on map
-            // Todo: add emulation of gps movement in emulator android studio
+            // Todo: add emulation of gps movement in emulator android studio based on https://github.com/VolobuievKostiantyn/Startup-OpenYourWorld/commit/2cdf32642ed41c200d38b3e948a549ec070c9af3
+            // Todo: hide all area and then unhide the way
             // Todo: add git secure actions https://docs.github.com/en/actions/reference/security/secure-use
+            // Todo: Emulate GPS movement in emulator using testMockLocation.kml and add it to the pptx demo slide
             val radiusInMeters = 5.0
             val latitude = LocationTrackingService.GlobalVariables.latitude
             val longitude = LocationTrackingService.GlobalVariables.longitude
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
 
-            // Todo: Emulate GPS movement in emulator using testMockLocation.kml and add it to the pptx demo slide
             val point1 = GeoPoint(latitude!!, longitude!!)
             drawTransparentGreenCircle(map, point1, radiusInMeters)
         }
