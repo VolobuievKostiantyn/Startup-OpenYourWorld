@@ -80,7 +80,7 @@ class FirstFragment : Fragment() {
                     it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
             } }
 
-            // Mark area for two positions from the DB on the Osmdroid Map
+            // Mark area for two positions from the DB on map
             // Todo: add emulation of gps movement in emulator android studio
             // Todo: add git secure actions https://docs.github.com/en/actions/reference/security/secure-use
             val radiusInMeters = 5.0

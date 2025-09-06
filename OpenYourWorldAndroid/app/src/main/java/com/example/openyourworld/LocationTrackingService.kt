@@ -55,9 +55,10 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import java.util.concurrent.TimeUnit
 
-// Implement a background service for continuous location tracking.
-// Use the Android Location API to obtain location updates.
-// based on this example https://github.com/android/platform-samples/tree/main/samples/location/src/main/java/com/example/platform/location/bglocationaccess
+// Background service for continuous location tracking.
+// Android Location API to obtain location updates
+// was used based on this example
+// https://github.com/android/platform-samples/tree/main/samples/location/src/main/java/com/example/platform/location/bglocationaccess
 class LocationTrackingService(context: Context, param: WorkerParameters) : Worker(context, param) {
     private val TAG: String = LocationTrackingService::class.java.getSimpleName();
 
