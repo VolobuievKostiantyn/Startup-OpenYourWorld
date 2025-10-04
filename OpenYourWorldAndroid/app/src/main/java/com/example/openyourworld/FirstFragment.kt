@@ -96,7 +96,7 @@ class FirstFragment : Fragment() {
 //            drawTransparentGreenCircle(map, point1, radiusInMeters)
 
             drawTestRoute(radiusInMeters)
-            // Todo: !!!!! hide all area and then unhide the way
+            // Todo: !!!!! hide all areas on map and then unhide only the way
         }
 
         binding.buttonNextFragment.setOnClickListener {
