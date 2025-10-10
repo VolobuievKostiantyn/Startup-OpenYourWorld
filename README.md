@@ -2,7 +2,7 @@
 OpenYourWorld is an Android application that gamifies real-life exploration. 
 The app tracks user locations, highlights visited places on a Google Map, and darkens unvisited areas — inspired by exploration mechanics in video games like Grand Theft Auto.
 
-<img width="465" height="959" alt="Running Devices - OpenYourWorld 23 08 2025 18_26_12" src="https://github.com/user-attachments/assets/8a3412eb-e6f4-4656-8b71-cd5ffc2ff402" />
+<img width="237" height="484" alt="Capture" src="https://github.com/user-attachments/assets/227cd8b5-4180-48d7-a027-4ca21faafeb6" />
 
 ✨ Key Features
 - Location Tracking: Continuous background tracking with Android Location API.
