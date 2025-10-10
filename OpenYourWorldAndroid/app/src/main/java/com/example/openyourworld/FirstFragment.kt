@@ -3,6 +3,13 @@ package com.example.openyourworld
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.Point
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.RadialGradient
+import android.graphics.RectF
+import android.graphics.Shader
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
@@ -35,13 +42,16 @@ class FirstFragment : Fragment() {
     private var _binding: FragmentFirstBinding? = null
     private lateinit var map: MapView
 
+    // NEW: overlay that darkens everything except visited spots
+    private lateinit var penumbraOverlay: PenumbraRevealOverlay  // NEW
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
@@ -58,6 +68,10 @@ class FirstFragment : Fragment() {
         // Inflate and create the map
         map = view.findViewById(R.id.osmmap)
         map.setTileSource(TileSourceFactory.MAPNIK)
+
+        // NEW: attach the gray “hide all” overlay
+        penumbraOverlay = PenumbraRevealOverlay()  // NEW
+        map.overlays.add(penumbraOverlay)          // NEW
 
         // Find the ComposeView and set the content
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
@@ -79,11 +93,11 @@ class FirstFragment : Fragment() {
 //                setPositionMarker(it1,
 //                    it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
 //            } }
-            binding.buttonCurrentPosition.setOnClickListener {
-                59.437096.let { it1 -> 24.745296.let { it2 ->
-                    setPositionMarker(it1,
-                        it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
-                } }
+        binding.buttonCurrentPosition.setOnClickListener {
+            59.436960.let { it1 -> 24.745710.let { it2 ->
+                setPositionMarker(it1,
+                    it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
+            } }
 
             // Mark area for two positions from the DB on map
             val radiusInMeters = 5.0
@@ -95,7 +109,7 @@ class FirstFragment : Fragment() {
 //            val point1 = GeoPoint(latitude!!, longitude!!)
 //            drawTransparentGreenCircle(map, point1, radiusInMeters)
 
-            drawTestRoute(radiusInMeters)
+            drawTestRoute(radiusInMeters)  // CHANGED: will *reveal* areas instead of drawing green dots
             // Todo: !!!!! hide all areas on map and then unhide only the way
         }
 
@@ -106,64 +120,120 @@ class FirstFragment : Fragment() {
 
     private fun drawTestRoute(radiusInMeters: Double) {
         val coordinates = arrayOf(
-            Pair(59.437096, 24.745296),
-            Pair(59.437107, 24.745315),
-            Pair(59.437118, 24.745334),
-            Pair(59.437129, 24.745353),
-            Pair(59.437140, 24.745372),
-            Pair(59.437151, 24.745391),
-            Pair(59.437162, 24.745410),
-            Pair(59.437173, 24.745429),
-            Pair(59.437184, 24.745448),
-            Pair(59.437195, 24.745467),
-            Pair(59.437206, 24.745486),
-            Pair(59.437218, 24.745714),
-            Pair(59.437230, 24.745700),
-            Pair(59.437250, 24.745650),
-            Pair(59.437280, 24.745580),
-            Pair(59.437310, 24.745510),
-            Pair(59.437340, 24.745440),
-            Pair(59.437370, 24.745370),
-            Pair(59.437400, 24.745300),
-            Pair(59.437430, 24.745230),
-            Pair(59.437460, 24.745160),
-            Pair(59.437490, 24.745090),
-            Pair(59.437520, 24.745020),
-            Pair(59.437550, 24.744950),
-            Pair(59.437580, 24.744880),
-            Pair(59.437611, 24.744910),
-            Pair(59.437641, 24.744900),
-            Pair(59.437620, 24.744880),
-            Pair(59.437590, 24.744850),
-            Pair(59.437560, 24.744820),
-            Pair(59.437530, 24.744790),
-            Pair(59.437500, 24.744760),
-            Pair(59.437470, 24.744730),
-            Pair(59.437440, 24.744700),
-            Pair(59.437410, 24.744670),
-            Pair(59.437380, 24.744640),
-            Pair(59.437350, 24.744610),
-            Pair(59.437320, 24.744580),
-            Pair(59.437290, 24.744550),
-            Pair(59.437285, 24.744440),
-            Pair(59.437270, 24.744460),
-            Pair(59.437250, 24.744490),
-            Pair(59.437230, 24.744520),
-            Pair(59.437210, 24.744550),
-            Pair(59.437190, 24.744580),
-            Pair(59.437170, 24.744610),
-            Pair(59.437150, 24.744640),
-            Pair(59.437130, 24.744670),
-            Pair(59.437110, 24.744700),
-            Pair(59.437105, 24.744713)
+            // Start: right-south (SE) corner of the square
+            Pair(59.436960, 24.745710),
+            Pair(59.436964, 24.745706),
+            Pair(59.436969, 24.745703),
+
+            // Brief pause (checking phone)
+            Pair(59.436969, 24.745703),
+            Pair(59.436968, 24.745704),
+
+            // Begin diagonal toward the center (lat ↑ north, lon ↓ west)
+            Pair(59.436980, 24.745690),
+            Pair(59.436992, 24.745675),
+            Pair(59.437005, 24.745660),
+            Pair(59.437018, 24.745646),
+            Pair(59.437032, 24.745632),
+            Pair(59.437045, 24.745617),
+
+            // Gentle wobble as avoiding people
+            Pair(59.437053, 24.745622),
+            Pair(59.437061, 24.745610),
+            Pair(59.437070, 24.745598),
+            Pair(59.437079, 24.745586),
+            Pair(59.437088, 24.745574),
+
+            // Slight slow-down (street vendor)
+            Pair(59.437088, 24.745574),
+            Pair(59.437089, 24.745573),
+
+            // Resume drift toward square center
+            Pair(59.437100, 24.745560),
+            Pair(59.437113, 24.745545),
+            Pair(59.437126, 24.745530),
+            Pair(59.437139, 24.745515),
+            Pair(59.437151, 24.745502),
+            Pair(59.437163, 24.745488),
+
+            // Soft right-left weave
+            Pair(59.437171, 24.745494),
+            Pair(59.437179, 24.745481),
+            Pair(59.437188, 24.745470),
+            Pair(59.437197, 24.745458),
+            Pair(59.437206, 24.745446),
+
+            // Approaching center of the square
+            Pair(59.437214, 24.745432),
+            Pair(59.437222, 24.745418),
+            Pair(59.437230, 24.745405),
+            Pair(59.437238, 24.745392),
+
+            // Brief pause to look around (repeat)
+            Pair(59.437238, 24.745392),
+            Pair(59.437238, 24.745392),
+
+            // Cross the center with mild jitter
+            Pair(59.437247, 24.745378),
+            Pair(59.437256, 24.745364),
+            Pair(59.437265, 24.745350),
+            Pair(59.437274, 24.745336),
+            Pair(59.437283, 24.745322),
+
+            // Small sidestep (someone passes)
+            Pair(59.437284, 24.745330),
+            Pair(59.437289, 24.745318),
+            Pair(59.437295, 24.745306),
+
+            // Continue NW
+            Pair(59.437304, 24.745292),
+            Pair(59.437313, 24.745278),
+            Pair(59.437322, 24.745265),
+            Pair(59.437331, 24.745252),
+            Pair(59.437339, 24.745238),
+
+            // Another micro-pause
+            Pair(59.437339, 24.745238),
+            Pair(59.437340, 24.745237),
+
+            // Gentle turn left (more west)
+            Pair(59.437347, 24.745220),
+            Pair(59.437355, 24.745204),
+            Pair(59.437362, 24.745188),
+            Pair(59.437369, 24.745172),
+            Pair(59.437375, 24.745156),
+
+            // Subtle zig-zag as approaching the NW side
+            Pair(59.437381, 24.745150),
+            Pair(59.437388, 24.745134),
+            Pair(59.437395, 24.745120),
+            Pair(59.437401, 24.745106),
+            Pair(59.437406, 24.745094),
+
+            // Last stretch toward the left-north (NW) corner
+            Pair(59.437412, 24.745080),
+            Pair(59.437418, 24.745066),
+            Pair(59.437424, 24.745054),
+            Pair(59.437430, 24.745040),
+            Pair(59.437435, 24.745028),
+
+            // Arrive near the NW corner; tiny settle
+            Pair(59.437438, 24.745020),
+            Pair(59.437438, 24.745020),
+            Pair(59.437439, 24.745019)
         )
 
         // 2. Loop through all coordinates
         for ((lat, lon) in coordinates) {
             val point = GeoPoint(lat, lon)
             // Example: draw green dot for each coordinate
-            drawTransparentGreenCircle(map, point, radiusInMeters)
+            // drawTransparentGreenCircle(map, point, radiusInMeters) // OLD (kept as comment)
+            // CHANGED: reveal transparent area at each position instead of drawing a dot
+            if (::penumbraOverlay.isInitialized) {
+                penumbraOverlay.addVisitedArea(point, radiusInMeters)
+            }
         }
+        map.invalidate() // NEW: refresh after batch updates
     }
 
     override fun onDestroyView() {
@@ -199,7 +269,89 @@ class FirstFragment : Fragment() {
         circle.strokeColor = Color.TRANSPARENT
         circle.strokeWidth = 0f
 
-        map.overlays.add(circle)
+        // map.overlays.add(circle) // CHANGED: do NOT draw green dot anymore
+
+        // NEW: register this area as “visited” so the penumbra overlay reveals it
+        if (::penumbraOverlay.isInitialized) {
+            penumbraOverlay.addVisitedArea(center, radiusInMeters)
+        }
+
         map.invalidate()
+    }
+}
+
+/**
+ * NEW: Overlay that darkens the entire map with a gray veil and reveals visited areas
+ * with a soft (penumbra) edge.
+ */
+class PenumbraRevealOverlay : Overlay() {
+
+    // Store visited areas as (center, radiusMeters)
+    private val visitedAreas = mutableListOf<Pair<GeoPoint, Double>>()
+
+    // Paints reused each frame
+    private val veilPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        // overall gray veiling color (semi-transparent)
+        color = Color.argb(180, 30, 30, 30)
+    }
+    private val clearPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+    }
+    private val featherPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        // xfermode to “subtract” alpha gradually (soft edge)
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+    }
+
+    fun addVisitedArea(center: GeoPoint, radiusMeters: Double) {
+        visitedAreas += center to radiusMeters
+    }
+
+    override fun draw(canvas: Canvas, mapView: MapView, shadow: Boolean) {
+        if (shadow) return
+
+        // Save a new layer so CLEAR/DST_OUT work as expected on hardware canvas
+        val layerBounds = RectF(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat())
+        val checkpoint = canvas.saveLayer(layerBounds, null)
+
+        // 1) Paint the full-screen gray veil
+        canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), veilPaint)
+
+        // 2) For each visited area, punch a transparent “window” with soft feather
+        val projection = mapView.projection
+        val tmpPoint = Point()
+
+        for ((geo, radiusMeters) in visitedAreas) {
+            // Convert center to screen px
+            projection.toPixels(geo, tmpPoint)
+
+            // Convert meters -> pixels at the current latitude/zoom
+            val pxPerMeterEquator = projection.metersToEquatorPixels(1f).toDouble()
+            val cosLat = kotlin.math.cos(Math.toRadians(geo.latitude))
+            val pxPerMeterHere = pxPerMeterEquator / cosLat
+            val radiusPx = (radiusMeters * pxPerMeterHere).toFloat()
+
+            // 2a) Hard-clear a core area for full reveal
+            val coreRadius = radiusPx * 0.7f
+            canvas.drawCircle(tmpPoint.x.toFloat(), tmpPoint.y.toFloat(), coreRadius, clearPaint)
+
+            // 2b) Draw a soft feather (transparent center -> veil alpha at the edge)
+            val gradient = RadialGradient(
+                tmpPoint.x.toFloat(),
+                tmpPoint.y.toFloat(),
+                radiusPx,
+                intArrayOf(Color.BLACK, Color.TRANSPARENT), // used with DST_OUT to subtract alpha gradually
+                floatArrayOf(0f, 1f),
+                Shader.TileMode.CLAMP
+            )
+            featherPaint.shader = gradient
+            canvas.drawCircle(tmpPoint.x.toFloat(), tmpPoint.y.toFloat(), radiusPx, featherPaint)
+            featherPaint.shader = null
+        }
+
+        // Restore layer (applies our compositing)
+        canvas.restoreToCount(checkpoint)
     }
 }
