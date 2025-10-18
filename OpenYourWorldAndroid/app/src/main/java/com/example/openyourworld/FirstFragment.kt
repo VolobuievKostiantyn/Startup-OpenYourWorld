@@ -29,7 +29,7 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polygon
 
-// Defaule position, for example, New York City
+// Default position, for example, New York City
 private const val DEFAULT_LATITUDE_ON_MAP_VIEW = 40.7128
 private const val DEFAULT_LONGITUDE_ON_MAP_VIEW = -74.0060
 private const val DEFAULT_MAT_VIEW_ZOOM_LEVEL = 17.0
@@ -42,8 +42,8 @@ class FirstFragment : Fragment() {
     private var _binding: FragmentFirstBinding? = null
     private lateinit var map: MapView
 
-    // NEW: overlay that darkens everything except visited spots
-    private lateinit var penumbraOverlay: PenumbraRevealOverlay  // NEW
+    // overlay that darkens everything except visited spots
+    private lateinit var penumbraOverlay: PenumbraRevealOverlay
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -69,9 +69,9 @@ class FirstFragment : Fragment() {
         map = view.findViewById(R.id.osmmap)
         map.setTileSource(TileSourceFactory.MAPNIK)
 
-        // NEW: attach the gray “hide all” overlay
-        penumbraOverlay = PenumbraRevealOverlay()  // NEW
-        map.overlays.add(penumbraOverlay)          // NEW
+        // attach the gray “hide all” overlay
+        penumbraOverlay = PenumbraRevealOverlay()
+        map.overlays.add(penumbraOverlay)
 
         // Find the ComposeView and set the content
         val composeView = view.findViewById<ComposeView>(R.id.compose_view)
@@ -109,8 +109,8 @@ class FirstFragment : Fragment() {
 //            val point1 = GeoPoint(latitude!!, longitude!!)
 //            drawTransparentGreenCircle(map, point1, radiusInMeters)
 
-            drawTestRoute(radiusInMeters)  // CHANGED: will *reveal* areas instead of drawing green dots
-            // Todo: !!!!! hide all areas on map and then unhide only the way
+            // Todo: replaceTestRoute with drawPoint(map, point1, radiusInMeters)
+            drawTestRoute(radiusInMeters)  // reveal areas
         }
 
         binding.buttonNextFragment.setOnClickListener {
@@ -233,7 +233,7 @@ class FirstFragment : Fragment() {
                 penumbraOverlay.addVisitedArea(point, radiusInMeters)
             }
         }
-        map.invalidate() // NEW: refresh after batch updates
+        map.invalidate() // refresh after batch updates
     }
 
     override fun onDestroyView() {
@@ -271,7 +271,7 @@ class FirstFragment : Fragment() {
 
         // map.overlays.add(circle) // CHANGED: do NOT draw green dot anymore
 
-        // NEW: register this area as “visited” so the penumbra overlay reveals it
+        // register this area as “visited” so the penumbra overlay reveals it
         if (::penumbraOverlay.isInitialized) {
             penumbraOverlay.addVisitedArea(center, radiusInMeters)
         }
@@ -281,7 +281,7 @@ class FirstFragment : Fragment() {
 }
 
 /**
- * NEW: Overlay that darkens the entire map with a gray veil and reveals visited areas
+ * Overlay that darkens the entire map with a gray veil and reveals visited areas
  * with a soft (penumbra) edge.
  */
 class PenumbraRevealOverlay : Overlay() {
