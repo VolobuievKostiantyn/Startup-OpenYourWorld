@@ -228,7 +228,7 @@ class FirstFragment : Fragment() {
             val point = GeoPoint(lat, lon)
             // Example: draw green dot for each coordinate
             // drawTransparentGreenCircle(map, point, radiusInMeters) // OLD (kept as comment)
-            // CHANGED: reveal transparent area at each position instead of drawing a dot
+            // Reveal transparent area at each position
             if (::penumbraOverlay.isInitialized) {
                 penumbraOverlay.addVisitedArea(point, radiusInMeters)
             }
@@ -269,7 +269,7 @@ class FirstFragment : Fragment() {
         circle.strokeColor = Color.TRANSPARENT
         circle.strokeWidth = 0f
 
-        // map.overlays.add(circle) // CHANGED: do NOT draw green dot anymore
+        // map.overlays.add(circle)
 
         // register this area as “visited” so the penumbra overlay reveals it
         if (::penumbraOverlay.isInitialized) {
