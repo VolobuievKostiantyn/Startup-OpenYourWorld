@@ -106,9 +106,6 @@ class FirstFragment : Fragment() {
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
 
-//            val point1 = GeoPoint(latitude!!, longitude!!)
-//            drawTransparentGreenCircle(map, point1, radiusInMeters)
-
             // Todo: replaceTestRoute with drawPoint(map, point1, radiusInMeters)
             drawTestRoute(radiusInMeters)  // reveal areas
         }
@@ -226,8 +223,6 @@ class FirstFragment : Fragment() {
         // 2. Loop through all coordinates
         for ((lat, lon) in coordinates) {
             val point = GeoPoint(lat, lon)
-            // Example: draw green dot for each coordinate
-            // drawTransparentGreenCircle(map, point, radiusInMeters) // OLD (kept as comment)
             // Reveal transparent area at each position
             if (::penumbraOverlay.isInitialized) {
                 penumbraOverlay.addVisitedArea(point, radiusInMeters)
@@ -255,28 +250,6 @@ class FirstFragment : Fragment() {
         mapController.setCenter(geoPoint)
 
         map.invalidate() // Refresh the map
-    }
-
-    private fun drawTransparentGreenCircle(map: MapView, center: GeoPoint, radiusInMeters: Double) {
-        val circle = Polygon()
-        circle.points = Polygon.pointsAsCircle(center, radiusInMeters)
-
-        // Set semi-transparent green fill
-        circle.fillPaint.color = Color.argb(64, 0, 255, 0)
-        circle.fillPaint.style = Paint.Style.FILL
-
-        // Remove outline
-        circle.strokeColor = Color.TRANSPARENT
-        circle.strokeWidth = 0f
-
-        // map.overlays.add(circle)
-
-        // register this area as “visited” so the penumbra overlay reveals it
-        if (::penumbraOverlay.isInitialized) {
-            penumbraOverlay.addVisitedArea(center, radiusInMeters)
-        }
-
-        map.invalidate()
     }
 }
 
