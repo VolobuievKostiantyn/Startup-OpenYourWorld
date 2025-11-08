@@ -106,13 +106,22 @@ class FirstFragment : Fragment() {
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
 
-            // Todo: replaceTestRoute with drawPoint(map, point1, radiusInMeters)
+            // Todo: replaceTestRoute with drawPoint(...) to draw current position
             drawTestRoute(radiusInMeters)  // reveal areas
         }
 
         binding.buttonNextFragment.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+    }
+
+    private fun drawPoint(map: MapView, lat: Double, lon: Double, radiusInMeters: Double) {
+        val point = GeoPoint(lat, lon)
+        // Reveal transparent area at each position
+        if (::penumbraOverlay.isInitialized) {
+            penumbraOverlay.addVisitedArea(point, radiusInMeters)
+        }
+        map.invalidate() // refresh after batch updates
     }
 
     private fun drawTestRoute(radiusInMeters: Double) {
@@ -220,7 +229,7 @@ class FirstFragment : Fragment() {
             Pair(59.437439, 24.745019)
         )
 
-        // 2. Loop through all coordinates
+        // Loop through all coordinates
         for ((lat, lon) in coordinates) {
             val point = GeoPoint(lat, lon)
             // Reveal transparent area at each position
