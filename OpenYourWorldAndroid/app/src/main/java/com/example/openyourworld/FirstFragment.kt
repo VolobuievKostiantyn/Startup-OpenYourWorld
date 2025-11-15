@@ -88,26 +88,32 @@ class FirstFragment : Fragment() {
         )
 
         // Set current position
-//        binding.buttonCurrentPosition.setOnClickListener {
-//            LocationTrackingService.GlobalVariables.latitude?.let { it1 -> LocationTrackingService.GlobalVariables.longitude?.let { it2 ->
-//                setPositionMarker(it1,
-//                    it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
-//            } }
         binding.buttonCurrentPosition.setOnClickListener {
-            59.436960.let { it1 -> 24.745710.let { it2 ->
+            LocationTrackingService.GlobalVariables.latitude?.let { it1 -> LocationTrackingService.GlobalVariables.longitude?.let { it2 ->
                 setPositionMarker(it1,
                     it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
             } }
 
+        // Set test position
+//        binding.buttonCurrentPosition.setOnClickListener {
+//            59.436960.let { it1 -> 24.745710.let { it2 ->
+//                setPositionMarker(it1,
+//                    it2, DEFAULT_MAT_VIEW_ZOOM_LEVEL)
+//            } }
+
             // Mark area for two positions from the DB on map
             val radiusInMeters = 5.0
-            val latitude = LocationTrackingService.GlobalVariables.latitude
-            val longitude = LocationTrackingService.GlobalVariables.longitude
+            val latitude = LocationTrackingService.GlobalVariables.latitude ?: 0.0
+            val longitude = LocationTrackingService.GlobalVariables.longitude ?: 0.0
+            //Todo: check why the latitude is 0
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
 
-            // Todo: replaceTestRoute with drawPoint(...) to draw current position
-            drawTestRoute(radiusInMeters)  // reveal areas
+            // Draw current position
+            drawPoint(map, latitude, longitude, radiusInMeters)
+
+            // Draw test route
+            //drawTestRoute(radiusInMeters)  // reveal areas
         }
 
         binding.buttonNextFragment.setOnClickListener {
