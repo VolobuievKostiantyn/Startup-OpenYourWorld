@@ -67,8 +67,8 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
     private val locationClient = LocationServices.getFusedLocationProviderClient(context)
 
     object GlobalVariables {
-        var latitude: Double? = null
-        var longitude: Double? = null
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
         lateinit var dbHelper: LocationDatabaseHelper
     }
 
@@ -89,7 +89,9 @@ class LocationTrackingService(context: Context, param: WorkerParameters) : Worke
                 // Use the location object
                 GlobalVariables.latitude = location.latitude
                 GlobalVariables.longitude = location.longitude
-                //Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "GlobalVariables.latitude = " + GlobalVariables.latitude)
+                Log.d(TAG, "GlobalVariables.latitude = " + GlobalVariables.latitude)
+                Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
 
                 // Add current position to DB
                 dbHelper = LocationDatabaseHelper(applicationContext)

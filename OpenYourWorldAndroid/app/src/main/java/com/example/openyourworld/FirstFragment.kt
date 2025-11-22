@@ -103,14 +103,16 @@ class FirstFragment : Fragment() {
 
             // Mark area for two positions from the DB on map
             val radiusInMeters = 5.0
-            val latitude = LocationTrackingService.GlobalVariables.latitude ?: 0.0
-            val longitude = LocationTrackingService.GlobalVariables.longitude ?: 0.0
+            val latitude = LocationTrackingService.GlobalVariables.latitude
+            val longitude = LocationTrackingService.GlobalVariables.longitude
             //Todo: check why the latitude is 0
             Log.d(TAG, "latitude = " + latitude)
             Log.d(TAG, "longitude = " + longitude)
 
             // Draw current position
-            drawPoint(map, latitude, longitude, radiusInMeters)
+            if (latitude != null || longitude != null) {
+                drawPoint(map, latitude, longitude, radiusInMeters)
+            }
 
             // Draw test route
             //drawTestRoute(radiusInMeters)  // reveal areas
