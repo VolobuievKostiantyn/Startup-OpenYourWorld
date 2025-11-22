@@ -78,6 +78,7 @@ class FirstFragment : Fragment() {
         composeView.setContent {
             // Get location updates here
             Log.d(TAG, "Getting location updates started")
+            //Todo: continiously update location (location.latitude and location.longitude) each 1 second in the scheduleWork
             LocationTrackingService.scheduleWork(requireContext().applicationContext)
             Log.d(TAG, "Getting location updates ended")
         }
