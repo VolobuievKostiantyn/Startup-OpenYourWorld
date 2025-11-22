@@ -115,7 +115,7 @@ class FirstFragment : Fragment() {
             }
 
             // Draw test route
-            //drawTestRoute(radiusInMeters)  // reveal areas
+//            drawTestRoute(radiusInMeters)  // reveal areas
         }
 
         binding.buttonNextFragment.setOnClickListener {

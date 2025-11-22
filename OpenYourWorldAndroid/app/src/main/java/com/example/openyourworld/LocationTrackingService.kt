@@ -17,6 +17,7 @@
 package com.example.openyourworld
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
@@ -39,85 +40,90 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.multiprocess.RemoteListenableWorker
-import com.example.openyourworld.LocationTrackingService.GlobalVariables.dbHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
 
 // Background service for continuous location tracking.
 // Android Location API to obtain location updates
 // was used based on this example
 // https://github.com/android/platform-samples/tree/main/samples/location/src/main/java/com/example/platform/location/bglocationaccess
-class LocationTrackingService(context: Context, param: WorkerParameters) : Worker(context, param) {
+class LocationTrackingService(context: Context, param: WorkerParameters) : CoroutineWorker(context, param) {
     private val TAG: String = LocationTrackingService::class.java.getSimpleName();
 
     // Unique name for the work
     private val workName = "LocationTrackingService"
-    private val locationClient = LocationServices.getFusedLocationProviderClient(context)
+    private val locationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(applicationContext)
 
     object GlobalVariables {
         var latitude: Double = 0.0
         var longitude: Double = 0.0
-        lateinit var dbHelper: LocationDatabaseHelper
     }
 
-    override fun doWork(): Result {
-        Log.i(TAG,"doWork start")
-        if (ActivityCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.i(TAG,"checkSelfPermission: location permissions denied")
-            return Result.failure()
-        }
-        locationClient.getCurrentLocation(
-            Priority.PRIORITY_BALANCED_POWER_ACCURACY, CancellationTokenSource().token,
-        ).addOnSuccessListener { location ->
-            if (location != null) {
-                // Use the location object
-                GlobalVariables.latitude = location.latitude
-                GlobalVariables.longitude = location.longitude
-                Log.d(TAG, "GlobalVariables.latitude = " + GlobalVariables.latitude)
-                Log.d(TAG, "GlobalVariables.latitude = " + GlobalVariables.latitude)
-                Toast.makeText(applicationContext, "Current location: ${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
+        override suspend fun doWork(): Result {
+            Log.i(TAG, "Worker started")
 
-                // Add current position to DB
-                dbHelper = LocationDatabaseHelper(applicationContext)
-
-                val insertedId = dbHelper.insertLocation(location.latitude, location.longitude)
-                println("Location saved to DB with ID: $insertedId")
-
-                // Fetch first location
-                val locations = dbHelper.getAllLocations()
-                if (locations.isNotEmpty()) {
-                    val firstLocation = locations[0]
-                    println("ID: ${firstLocation.id}, Lat: ${firstLocation.latitude}, Lon: ${firstLocation.longitude}")
-                }
-//                locations.forEach {
-//                    println("ID: ${it.id}, Lat: ${it.latitude}, Lon: ${it.longitude}")
-//                }
-            } else {
-                Toast.makeText(applicationContext, "Location not available. Turn on location", Toast.LENGTH_SHORT).show()
+            // Check permissions
+            if (ActivityCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.e(TAG, "Location permission missing.")
+                return Result.failure()
             }
+
+            // Suspend until location is retrieved
+            val location = getCurrentLocationSuspend()
+
+            if (location == null) {
+                Log.e(TAG, "Location is null")
+                return Result.retry()   // Retry instead of failing
+            }
+
+            // Log always shown now
+            Log.d(TAG, "Latitude = ${location.latitude}, Longitude = ${location.longitude}")
+            GlobalVariables.latitude = location.latitude
+            GlobalVariables.longitude = location.longitude
+
+            // Save to DB
+            val db = LocationDatabaseHelper(applicationContext)
+            val id = db.insertLocation(location.latitude, location.longitude)
+            Log.d(TAG, "Location saved, row id = $id")
+
+            return Result.success()
         }
 
-        scheduleWork(applicationContext)
+        @SuppressLint("MissingPermission")
+        private suspend fun getCurrentLocationSuspend() =
+        suspendCancellableCoroutine<android.location.Location?> { cont ->
+            val token = CancellationTokenSource()
 
-        Log.i(TAG,"doWork end")
-        return Result.success()
-    }
+            locationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                token.token
+            )
+                .addOnSuccessListener { cont.resume(it) }
+                .addOnFailureListener { cont.resume(null) }
+        }
 
     //name = "Location - Background Location updates";
     //description = "This Sample demonstrate how to access location and get location updates when app is in background";
